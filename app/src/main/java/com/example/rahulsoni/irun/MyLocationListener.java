@@ -13,6 +13,7 @@ public class MyLocationListener implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
         Log.d("g53mdp", location.getLatitude() + " " + location.getLongitude());
+        Log.d("g53mdp", String.valueOf(location.distanceTo(location)));
     }
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {

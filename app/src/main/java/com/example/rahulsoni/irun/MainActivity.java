@@ -44,17 +44,10 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        LocationManager locationManager =
-                (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        MyLocationListener locationListener = new MyLocationListener();
-        try {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                    5, // minimum time interval between updates
-                    5, // minimum distance between updates, in metres
-                    locationListener);
-        } catch(SecurityException e) {
-            Log.d("g53mdp", e.toString());
-        }
+        startService(new Intent(this,MyService .class));
+
+
+
     }
 
     @Override
