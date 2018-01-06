@@ -14,6 +14,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.content.Context;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -39,6 +43,18 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        LocationManager locationManager =
+                (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        MyLocationListener locationListener = new MyLocationListener();
+        try {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                    5, // minimum time interval between updates
+                    5, // minimum distance between updates, in metres
+                    locationListener);
+        } catch(SecurityException e) {
+            Log.d("g53mdp", e.toString());
+        }
     }
 
     @Override
