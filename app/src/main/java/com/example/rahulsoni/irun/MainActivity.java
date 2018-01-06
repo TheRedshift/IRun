@@ -1,8 +1,10 @@
 package com.example.rahulsoni.irun;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,6 +17,12 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+
+    //Response codes for the stats and info activities
+    static final int STATS = 1;
+
+    static final int INFO = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,11 +67,15 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_run) {
-            // Handle the camera action
+            Log.d("g53mdp", "Run button pressed");
         } else if (id == R.id.nav_stats) {
-
+            Log.d("g53mdp", "Stats button pressed");
+            Intent intent = new Intent(MainActivity.this, StatsActivity.class);
+            startActivityForResult(intent, STATS);
         } else if (id == R.id.nav_info) {
-
+            Log.d("g53mdp", "Info button pressed");
+            Intent intent = new Intent(MainActivity.this, StatsActivity.class);
+            startActivityForResult(intent, INFO);
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
