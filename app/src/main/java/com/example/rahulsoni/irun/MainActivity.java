@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity
             startActivityForResult(intent, STATS);
         } else if (id == R.id.nav_info) {
             Log.d("g53mdp", "Info button pressed");
-            Intent intent = new Intent(MainActivity.this, StatsActivity.class);
+            Intent intent = new Intent(MainActivity.this, InfoActivity.class);
             startActivityForResult(intent, INFO);
         }
 
