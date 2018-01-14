@@ -38,7 +38,6 @@ public class MyService extends Service {
             // information about the signal, i.e. number of satellites
             Log.d("g53mdp", "onStatusChanged: " + provider + " " + status);
             Intent intent = new Intent();
-            intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
             intent.setAction("com.example.rahulsoni.irun.MyBroadcast");
             intent.putExtra("Foo", "Bar");
             sendBroadcast(intent);

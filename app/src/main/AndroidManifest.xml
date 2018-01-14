@@ -13,11 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <receiver
-            android:name="com.example.rahulsoni.irun.MyBroadcast"
-            android:enabled="true"
-            android:exported="true" >
+            android:name="com.example.rahulsoni.irun.MyBroadcast">
             <intent-filter>
-                <action android:name="com.example.rahulsoni.irun.MyBroadcast" />
+                <action android:name="com.example.rahulsoni.irun.MyBroadcast" android:enabled="true" />
             </intent-filter>
         </receiver>
         <activity

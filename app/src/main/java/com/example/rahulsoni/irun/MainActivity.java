@@ -79,6 +79,10 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_run) {
             Log.d("g53mdp", "Run button pressed");
+            Intent intent = new Intent();
+            intent.setAction("com.example.rahulsoni.irun.MyBroadcast");
+            intent.setClass(this, MyBroadcast.class);
+            sendBroadcast(intent);
         } else if (id == R.id.nav_stats) {
             Log.d("g53mdp", "Stats button pressed");
             Intent intent = new Intent(MainActivity.this, StatsActivity.class);
