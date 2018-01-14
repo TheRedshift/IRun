@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.database.sqlite.SQLiteDatabase;
+
 
 /**
  * Created by Rahul Soni on 06/01/2018.
@@ -18,6 +20,7 @@ import android.util.Log;
 public class MyService extends Service {
 
     private LocationManager mLocationManager = null;
+
 
     private class MyLocationListener implements LocationListener {
 
@@ -81,7 +84,6 @@ public class MyService extends Service {
         LocationListener myLocationListener = new MyLocationListener() {
         };
 
-
         try {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                     5, // minimum time interval between updates
@@ -90,6 +92,9 @@ public class MyService extends Service {
         } catch(SecurityException e) {
             Log.d("g53mdp", e.toString());
         }
+
+        super.onCreate();
+
 
     }
 

@@ -1,6 +1,7 @@
 package com.example.rahulsoni.irun;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -44,7 +45,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void updateUI(Intent intent) {
-        // TODO update ui
+        ContentValues newValues = new ContentValues();
+        newValues.put(runsProviderContract.DATETIME, 0);
+        newValues.put(runsProviderContract.DISTANCE, 0);
+
+        //Database stuff is done through the provider
+        getContentResolver().insert(runsProviderContract.MYLIST_URI, newValues);
         Toast.makeText(this, "test", Toast.LENGTH_LONG).show();
 
     }

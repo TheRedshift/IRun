@@ -1,12 +1,8 @@
 package com.example.rahulsoni.irun;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-/**
- * Created by Rahul Soni on 14/01/2018.
- */
+import android.database.sqlite.SQLiteDatabase;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -14,11 +10,11 @@ public class DBHelper extends SQLiteOpenHelper {
         super(context, "rahulDB", null, 1  );
     }
 
-
+    //Made recipe section longer because who has a 128 character recipe?
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE runs (" +
+        db.execSQL("CREATE TABLE myList (" +
                 "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "date LONG(64), " +
+                "dateTime LONG(64), " +
                 "distance LONG(64)" +
                 ");");
     }
@@ -26,7 +22,7 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion,
                           int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS runs;");
+        db.execSQL("DROP TABLE IF EXISTS myList;");
         onCreate(db);
     }
 
