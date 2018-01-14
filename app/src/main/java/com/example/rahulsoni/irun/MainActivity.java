@@ -1,5 +1,6 @@
 package com.example.rahulsoni.irun;
 
+import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -27,6 +28,8 @@ public class MainActivity extends AppCompatActivity
     static final int STATS = 1;
 
     static final int INFO = 2;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +72,6 @@ public class MainActivity extends AppCompatActivity
     }
     */
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.

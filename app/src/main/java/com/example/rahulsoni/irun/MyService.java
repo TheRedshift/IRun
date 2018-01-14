@@ -37,6 +37,11 @@ public class MyService extends Service {
         public void onStatusChanged(String provider, int status, Bundle extras) {
             // information about the signal, i.e. number of satellites
             Log.d("g53mdp", "onStatusChanged: " + provider + " " + status);
+            Intent intent = new Intent();
+            intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+            intent.setAction("com.example.rahulsoni.irun.MyBroadcast");
+            intent.putExtra("Foo", "Bar");
+            sendBroadcast(intent);
         }
         @Override
         public void onProviderEnabled(String provider) {
