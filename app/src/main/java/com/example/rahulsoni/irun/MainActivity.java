@@ -2,6 +2,7 @@ package com.example.rahulsoni.irun;
 
 import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -19,6 +20,7 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -29,6 +31,48 @@ public class MainActivity extends AppCompatActivity
 
     static final int INFO = 2;
 
+    boolean ReceiverActive = false;
+
+    MyReceiver myReceiver;
+
+    private class MyReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            updateUI(intent);
+        }
+    }
+
+    private void updateUI(Intent intent) {
+        // TODO update ui
+        Toast.makeText(this, "test", Toast.LENGTH_LONG).show();
+
+    }
+
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+
+        if (!ReceiverActive) {
+            if (myReceiver == null)
+                myReceiver = new MyReceiver();
+            registerReceiver(myReceiver, new IntentFilter("com.example.rahulsoni.irun.MyBroadcast"));
+            ReceiverActive = true;
+        }
+    }
+
+    @Override
+    protected void onPause() {
+
+        super.onPause();
+
+        if (ReceiverActive) {
+            unregisterReceiver(myReceiver);
+            myReceiver = null;
+            ReceiverActive = false;
+        }
+    }
 
 
     @Override

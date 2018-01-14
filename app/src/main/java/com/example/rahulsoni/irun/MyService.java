@@ -36,7 +36,7 @@ public class MyService extends Service {
             intent.setAction("com.example.rahulsoni.irun.MyBroadcast");
             intent.putExtra("lat", location.getLatitude());
             intent.putExtra("long", location.getLongitude());
-            intent.setClass(getBaseContext(), MyBroadcast.class);
+            //intent.setClass(getBaseContext(), MainActivity.class);
             sendBroadcast(intent);
         }
         @Override

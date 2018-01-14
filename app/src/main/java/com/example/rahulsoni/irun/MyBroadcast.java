@@ -25,7 +25,7 @@ public class MyBroadcast extends BroadcastReceiver {
         double longi = b.getDouble("long");
 
         String latString = String.valueOf(lat);
-
+        String longString = String.valueOf(longi);
 
         Toast.makeText(ctxt, latString, Toast.LENGTH_LONG).show();
 
