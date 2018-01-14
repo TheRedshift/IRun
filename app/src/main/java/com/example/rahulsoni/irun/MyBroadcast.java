@@ -3,6 +3,10 @@ package com.example.rahulsoni.irun;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+
+import android.location.LocationManager;
+import android.os.Bundle;
 import android.widget.Toast;
 
 /**
@@ -15,8 +19,15 @@ public class MyBroadcast extends BroadcastReceiver {
     public void onReceive(Context ctxt, Intent i) {
 
 
-        Toast.makeText(ctxt, "This is my Toast message!",
-                Toast.LENGTH_LONG).show();
+        Bundle b = i.getExtras();
+
+        double lat = b.getDouble("lat");
+        double longi = b.getDouble("long");
+
+        String latString = String.valueOf(lat);
+
+
+        Toast.makeText(ctxt, latString, Toast.LENGTH_LONG).show();
 
     }
 }

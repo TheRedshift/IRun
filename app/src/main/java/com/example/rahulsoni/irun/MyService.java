@@ -32,15 +32,18 @@ public class MyService extends Service {
         public void onLocationChanged(Location location) {
             Log.d("g53mdp", location.getLatitude() + " " + location.getLongitude());
             Log.d("g53mdp", String.valueOf(location.distanceTo(location)));
+            Intent intent = new Intent();
+            intent.setAction("com.example.rahulsoni.irun.MyBroadcast");
+            intent.putExtra("lat", location.getLatitude());
+            intent.putExtra("long", location.getLongitude());
+            intent.setClass(getBaseContext(), MyBroadcast.class);
+            sendBroadcast(intent);
         }
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
             // information about the signal, i.e. number of satellites
             Log.d("g53mdp", "onStatusChanged: " + provider + " " + status);
-            Intent intent = new Intent();
-            intent.setAction("com.example.rahulsoni.irun.MyBroadcast");
-            intent.putExtra("Foo", "Bar");
-            sendBroadcast(intent);
+
         }
         @Override
         public void onProviderEnabled(String provider) {
