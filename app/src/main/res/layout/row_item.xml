@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- XML template procured from https://www.journaldev.com/10416/android-listview-with-custom-adapter-example-tutorial !-->
+
+
+<android.widget.LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:weightSum="90" >
+
+    <TextView
+        android:id="@+id/runDate"
+        android:layout_gravity="center"
+        android:layout_width="0dp"
+        android:layout_weight="30"
+        android:layout_height="match_parent"
+        android:textSize="25dp"
+        android:text="Date" />
+
+    <TextView
+        android:id="@+id/runDistance"
+        android:layout_gravity="center"
+        android:layout_width="0dp"
+        android:layout_weight="30"
+        android:layout_height="match_parent"
+        android:textSize="25dp"
+        android:text="Distance" />
+
+    <TextView
+        android:id="@+id/runTime"
+        android:layout_gravity="center"
+        android:layout_width="0dp"
+        android:layout_weight="30"
+        android:layout_height="match_parent"
+        android:textSize="25dp"
+        android:text="Time" />
+
+
+</android.widget.LinearLayout>
+

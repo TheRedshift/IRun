@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import java.util.Calendar;
+
 
 public class MyService extends Service {
 
@@ -19,6 +21,14 @@ public class MyService extends Service {
 
     private LocationListener myLocationListener;
 
+    Location currentLocation;
+
+    float runningTotal = 0;
+
+    double finishTime = 0;
+
+    double startTime = 0;
+
     private IBinder myBinder = new MyBinder();
 
     public class MyBinder extends Binder {
@@ -26,12 +36,14 @@ public class MyService extends Service {
 
         public void startRunning() {
 
+            startTime =  System.currentTimeMillis() / 1000;
+
             Log.e("g53mdp", "start running");
 
             mLocationManager =
                     (LocationManager)getBaseContext().getSystemService(Context.LOCATION_SERVICE);
-            myLocationListener = new MyLocationListener() {
-            };
+            myLocationListener = new MyLocationListener();
+
 
 
             try {
@@ -50,23 +62,38 @@ public class MyService extends Service {
                 mLocationManager.removeUpdates(myLocationListener);
             }
 
+            finishTime = System.currentTimeMillis() / 1000;
+
+            Intent intent = new Intent();
+            intent.setAction("com.example.rahulsoni.irun.test");
+
+            intent.putExtra("time", (finishTime - startTime));
+            intent.putExtra("distance", runningTotal);
+            intent.putExtra("date", System.currentTimeMillis());
+
+
+            sendBroadcast(intent);
+
+            runningTotal = 0;
+
+            finishTime = 0;
+
         }
+
     }
 
     private class MyLocationListener implements LocationListener {
 
-        //Location myLocation;
-
         @Override
         public void onLocationChanged(Location location) {
-            Log.d("g53mdp", location.getLatitude() + " " + location.getLongitude());
-            Log.d("g53mdp", String.valueOf(location.distanceTo(location)));
-            Intent intent = new Intent();
-            intent.setAction("com.example.rahulsoni.irun.test");
-            intent.putExtra("lat", location.getLatitude());
-            intent.putExtra("long", location.getLongitude());
-            //intent.setClass(getBaseContext(), MainActivity.class);
-            //sendBroadcast(intent);
+
+            if ((currentLocation != location) && (currentLocation != null)){
+                runningTotal += currentLocation.distanceTo(location);
+            }
+            currentLocation = location;
+            Log.d("g53mdp", "Current GPS: " + currentLocation);
+
+
         }
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {

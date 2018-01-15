@@ -3,32 +3,26 @@ package com.example.rahulsoni.irun;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
+import android.util.Log;
 import android.view.MenuItem;
-import android.content.Context;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.content.ServiceConnection;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -61,8 +55,9 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            //updateUI(intent);
-            Log.d("g53mdp", "receiver says hello");
+            updateUI(intent);
+            long temp = intent.getLongExtra("total", 0);
+            Log.d("g53mdp", String.valueOf(temp));
 
         }
     }
@@ -70,22 +65,23 @@ public class MainActivity extends AppCompatActivity
 
 
     private void updateUI(Intent intent) {
+
+        long date = intent.getLongExtra("date", 0);
+        float distance = intent.getFloatExtra("distance", 0);
+        double time = intent.getDoubleExtra("time", 0);
+
+
+
         ContentValues newValues = new ContentValues();
-        newValues.put(runsProviderContract.DATETIME, 0);
-        newValues.put(runsProviderContract.DISTANCE, 0);
+        newValues.put(runsProviderContract.DATE, date);
+        newValues.put(runsProviderContract.DISTANCE, distance);
+        newValues.put(runsProviderContract.TIME, time);
+
 
         //Database stuff is done through the provider
         getContentResolver().insert(runsProviderContract.MYLIST_URI, newValues);
-        Toast.makeText(this, "test", Toast.LENGTH_LONG).show();
 
-        //Sets up the database interacting code, because we only have one table it's quite simple
-        dbHelper = new DBHelper(this);
-        // Get access to the underlying writeable database
-        db = dbHelper.getWritableDatabase();
-        // Query for items from the database and get a cursor back
-        todoCursor = db.rawQuery("SELECT  * FROM myList", null);
 
-        Log.d("g53mdp", "Test" + ((todoCursor.getColumnIndex("dateTime"))));
 
     }
 
@@ -165,6 +161,10 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        Chronometer clocky = findViewById(R.id.chronometer2);
+
+        clocky.start();
+
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -173,6 +173,7 @@ public class MainActivity extends AppCompatActivity
         this.bindService(new Intent(this, MyService.class),
                 serviceConnection, Context.BIND_AUTO_CREATE);
         mBound = true;
+
     }
 
     @Override
@@ -203,15 +204,19 @@ public class MainActivity extends AppCompatActivity
 
     public void onToggleButtonClick(View view) {
 
+        Button b1 = findViewById(R.id.button1);
+
         if (!isWorking){
             Log.d("g53mdp", "Toggle button pressed, it is now working");
             isWorking = true;
             localService.startRunning();
+            b1.setText("Stop Running");
         }
         else{
             Log.d("g53mdp", "Toggle button pressed, it is now not working");
             isWorking = false;
             localService.stopRunning();
+            b1.setText("Start Running!");
         }
     }
 
@@ -226,10 +231,6 @@ public class MainActivity extends AppCompatActivity
             Log.d("g53mdp", "Stats button pressed");
             Intent intent = new Intent(MainActivity.this, StatsActivity.class);
             startActivityForResult(intent, STATS);
-        } else if (id == R.id.nav_info) {
-            Log.d("g53mdp", "Info button pressed");
-            Intent intent = new Intent(MainActivity.this, InfoActivity.class);
-            startActivityForResult(intent, INFO);
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

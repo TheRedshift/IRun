@@ -7,16 +7,16 @@ import android.database.sqlite.SQLiteDatabase;
 public class DBHelper extends SQLiteOpenHelper {
 
     public DBHelper(Context context) {
-        super(context, "rahulDB", null, 2  );
+        super(context, "rahulDB", null, 10 );
     }
 
     //Made recipe section longer because who has a 128 character recipe?
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE myList (" +
                 "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "dateTime LONG(64), " +
-                "distance LONG(64)" +
-                ");");
+                "date LONG(64), " +
+                "distance FLOAT(64)," +
+                "time DOUBLE(64));");
     }
 
     @Override
