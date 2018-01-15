@@ -9,10 +9,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.widget.Toast;
 
-/**
- * Created by Rahul Soni on 14/01/2018.
- */
-
 
 public class MyBroadcast extends BroadcastReceiver {
     @Override

@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 public class DBHelper extends SQLiteOpenHelper {
 
     public DBHelper(Context context) {
-        super(context, "rahulDB", null, 1  );
+        super(context, "rahulDB", null, 2  );
     }
 
     //Made recipe section longer because who has a 128 character recipe?

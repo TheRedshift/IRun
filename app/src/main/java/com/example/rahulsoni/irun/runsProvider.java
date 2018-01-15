@@ -21,30 +21,25 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
-/**
- * Created by Rahul Soni on 14/01/2018.
- */
-
 public class runsProvider extends ContentProvider {
 
-    DBHelper dbHelper;
+    private DBHelper dbHelper;
 
-    /*
+
 
     private static final UriMatcher uriMatcher;
 
     static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        uriMatcher.addURI(MyProviderContract.AUTHORITY, "myList", 1);
-        uriMatcher.addURI(MyProviderContract.AUTHORITY, "myList/#", 2);
+        uriMatcher.addURI(runsProviderContract.AUTHORITY, "myList", 1);
+        uriMatcher.addURI(runsProviderContract.AUTHORITY, "myList/#", 2);
     }
 
-    */
+
 
     @Override
     public boolean onCreate() {
-        Log.d("g53mdp", "contentprovider oncreate");
-        //Gives us a DBhelper for DB helping
+        Log.d("g53mdp", "runsProvider created");
         this.dbHelper = new DBHelper(this.getContext());
         return true;
     }
@@ -54,52 +49,99 @@ public class runsProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        //Only one table so nice and simple
-        String tableName = "myList";
 
-        return db.query(tableName, null, selection, selectionArgs, null, null, sortOrder);
+        switch (uriMatcher.match(uri)) {
+            case 2:
+                selection = "_ID = " + uri.getLastPathSegment();
+            case 1:
+                return db.query("myList", projection, selection, selectionArgs, null, null, sortOrder);
+            default:
+                return null;
+        }
     }
 
     @Override
     public String getType(Uri uri) {
-        if (uri.getLastPathSegment()==null)
-        {
-            return "vnd.android.cursor.dir/MyProvider.data.text";
-        }
-        else
-        {
-            return "vnd.android.cursor.item/MyProvider.data.text";
-        }
+            return "";
     }
 
     @Nullable
     @Override
-    public Uri insert(Uri uri, ContentValues values) {
+    public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
+        Log.d("MyList, entry is", uri.toString() + " " + uriMatcher.match(uri));
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        String tableName = "myList";
+        String table;
 
-        long id = db.insert(tableName, null, values);
+        switch (uriMatcher.match(uri)) {
+            case 1:
+                table = "myList";
+                break;
+            default:
+                table = "myList";
+                break;
+        }
+
+        long id = db.insert(table, null, values);
+        db.close();
         Uri nu = ContentUris.withAppendedId(uri, id);
-        Log.d("g53mdp", nu.toString());
+
+        Log.d("RecipeBook", nu.toString());
+
+        getContext().getContentResolver().notifyChange(nu, null);
+
         return nu;
-
     }
 
-    @Override
-    public int delete(@NonNull Uri uri, @Nullable String s, @Nullable String[] strings) {
-        return 0;
-    }
+    public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
+        Log.d("MyList, entry is ", uri.toString() + " " + uriMatcher.match(uri));
 
-    @Override
-    public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String s, @Nullable String[] strings) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        String tableName = "myList";
+        String table;
+        String[] Args = new String[]{
+                null
+        };
+        String where;
 
-        //We only ever update based on _id so we can hardcode this
-        db.update(tableName, contentValues, "_id=?" , strings);
+        switch (uriMatcher.match(uri)) {
+            case 2:
+                table = "MyList";
+                where = "_ID = ?";
+                Args[0] = uri.getLastPathSegment();
+                break;
+            default:
+                return 0;
+        }
 
-        return 0;
+        int rowsAffected = db.delete(table, where, Args);
+        db.close();
+        return rowsAffected;
+    }
+
+    @Override
+    public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
+        Log.d("MyList, entry is", uri.toString() + " " + uriMatcher.match(uri));
+
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        String table;
+        String[] Args = new String[]{
+                null
+        };
+        String where;
+
+        switch (uriMatcher.match(uri)) {
+            case 2:
+                table = "MyList";
+                where = "_ID = ?";
+                Args[0] = uri.getLastPathSegment();
+                break;
+            default:
+                return 0;
+        }
+
+        int rowsAffected = db.update(table, values, where, Args);
+        db.close();
+        return rowsAffected;
     }
 
 }

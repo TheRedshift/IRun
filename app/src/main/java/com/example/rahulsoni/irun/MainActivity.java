@@ -1,10 +1,14 @@
 package com.example.rahulsoni.irun;
 
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -21,11 +25,23 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.content.ServiceConnection;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    DBHelper dbHelper;
+
+    SQLiteDatabase db;
+
+    SimpleCursorAdapter todoAdapter;
+
+    Cursor todoCursor;
+
+    Boolean isWorking = false;
 
     //Response codes for the stats and info activities
     static final int STATS = 1;
@@ -36,13 +52,22 @@ public class MainActivity extends AppCompatActivity
 
     MyReceiver myReceiver;
 
+    MyService.MyBinder localService = null;
+
+    boolean mBound = false;
+
+
     private class MyReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            updateUI(intent);
+            //updateUI(intent);
+            Log.d("g53mdp", "receiver says hello");
+
         }
     }
+
+
 
     private void updateUI(Intent intent) {
         ContentValues newValues = new ContentValues();
@@ -53,25 +78,34 @@ public class MainActivity extends AppCompatActivity
         getContentResolver().insert(runsProviderContract.MYLIST_URI, newValues);
         Toast.makeText(this, "test", Toast.LENGTH_LONG).show();
 
+        //Sets up the database interacting code, because we only have one table it's quite simple
+        dbHelper = new DBHelper(this);
+        // Get access to the underlying writeable database
+        db = dbHelper.getWritableDatabase();
+        // Query for items from the database and get a cursor back
+        todoCursor = db.rawQuery("SELECT  * FROM myList", null);
+
+        Log.d("g53mdp", "Test" + ((todoCursor.getColumnIndex("dateTime"))));
+
     }
 
     @Override
-    protected void onResume() {
+    protected void onStart() {
 
-        super.onResume();
+        super.onStart();
 
         if (!ReceiverActive) {
-            if (myReceiver == null)
+            if (myReceiver == null){
                 myReceiver = new MyReceiver();
-            registerReceiver(myReceiver, new IntentFilter("com.example.rahulsoni.irun.MyBroadcast"));
-            ReceiverActive = true;
+                registerReceiver(myReceiver, new IntentFilter("com.example.rahulsoni.irun.test"));
+                ReceiverActive = true;
+            }
         }
     }
 
     @Override
-    protected void onPause() {
-
-        super.onPause();
+    protected void onStop() {
+        super.onStop();
 
         if (ReceiverActive) {
             unregisterReceiver(myReceiver);
@@ -80,10 +114,47 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service)
+        {
+            localService = (MyService.MyBinder) service;
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            localService = null;
+            mBound = false;
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
+
+        serviceConnection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service)
+            {
+                localService = (MyService.MyBinder) service;
+                mBound = true;
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                localService = null;
+                mBound = false;
+            }
+        };
+
+        if (savedInstanceState != null) {
+            isWorking = savedInstanceState.getBoolean("isWorking");
+       }
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -97,8 +168,21 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        startService(new Intent(this,MyService .class));
+        //startService(new Intent(this,MyService .class));
+
+        this.bindService(new Intent(this, MyService.class),
+                serviceConnection, Context.BIND_AUTO_CREATE);
+        mBound = true;
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        this.unbindService(serviceConnection);
+        mBound = false;
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -110,14 +194,26 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    /*
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("isWorking", isWorking);
+
     }
-    */
+
+    public void onToggleButtonClick(View view) {
+
+        if (!isWorking){
+            Log.d("g53mdp", "Toggle button pressed, it is now working");
+            isWorking = true;
+            localService.startRunning();
+        }
+        else{
+            Log.d("g53mdp", "Toggle button pressed, it is now not working");
+            isWorking = false;
+            localService.stopRunning();
+        }
+    }
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {

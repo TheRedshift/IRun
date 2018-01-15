@@ -36,7 +36,6 @@ public class InfoActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -52,6 +51,11 @@ public class InfoActivity extends AppCompatActivity
             startActivity(intent);
         } else if (id == R.id.nav_info) {
             Log.d("g53mdp", "Info button pressed");
+            Intent intent = new Intent();
+            intent.setAction("com.example.rahulsoni.test");
+            intent.putExtra("long", "test");
+            //intent.setClass(getBaseContext(), MainActivity.class);
+            sendBroadcast(intent);
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

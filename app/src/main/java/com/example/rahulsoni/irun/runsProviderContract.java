@@ -10,10 +10,12 @@ public final class runsProviderContract {
 
     //Class just exists to define some things
 
-    public static final String AUTHORITY = "com.example.rahulsoni.ainsleysappetizers.MyProvider";
+    public static final String AUTHORITY = "com.example.rahulsoni.irun.runsProvider";
 
     public static final Uri MYLIST_URI = Uri.parse("content://"+AUTHORITY+"/myList");
+
     public static final String _ID = "_id";
+
     public static final String DATETIME = "dateTime";
     public static final String DISTANCE = "distance";
 
